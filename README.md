@@ -21,3 +21,19 @@ vagrant up desktop server1 server3
 ```
 vagrant up
 ```
+
+## using vagrant ssh
+
+the following have been tested
+```
+vagrant ssh desktop
+```
+```
+vagrant ssh server1
+```
+```
+vagrant ssh server2
+```
+```
+vagrant ssh server3
+```
