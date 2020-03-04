@@ -1,0 +1,58 @@
+---
+- hosts: localhost
+  gather_facts: False
+  become: False
+  
+  vars:
+    version_of_ansible: 2.9.4
+
+  vars_prompt:
+    - name: username
+      prompt: "Please enter your username:"
+      private: no
+
+    - name: password
+      prompt: "Please enter your password (it will be hidden):"
+      private: yes
+      no_log: yes
+
+    - name: password2
+      prompt: "Please enter the system password (it will be hidden):"
+      private: yes
+      no_log: yes
+
+  pre_tasks:
+    - name: verify Ansible version meets playbook requirements
+      assert:
+        that: "ansible_version.full is version_compare('{{ version_of_ansible }}', '>=')"
+        msg: "minimum Ansible version {{ version_of_ansible }}"
+  tasks:
+    - name: check hostname on the Ansible host, that is localhost
+      command: hostname
+      register: hostnameOutput
+    - debug: msg="this server, {{hostnameOutput.stdout}}, is also known as localhost"
+    - name: check for undefined username and password
+      fail:
+        msg="exiting- both username and password are empty"
+      when: username == "" or password == "" 
+    - name: end play if system password is the same as the user password
+      fail:
+        # surpress display of passwords to screen
+        #msg="exiting as the user password ( {{ password }} ) and the system password ( {{ password2 }} )should not be the same"
+        msg="exiting as the user password and the system password should not be the same"
+      when: password2 == password
+    - name: end play if system password is a bad choice
+      fail:
+        msg="exiting since {{ password2 }}} is not a good system password"
+      when: password2 == "badpassword"
+    - name: fail if system password is empty
+      fail:
+        msg="exiting since system password was not set when prompted"
+      when: password2 == ""
+    # newly added in Ansbble version 2.8
+    #    - name: get the facts for default pip, pip2, and pip3
+    #  pip_package_info:
+    #    clients: ['pip', 'pip2', 'pip3']
+    #  register: clients_output
+    #- name: print info to screen
+    #  debug: msg={{clients_output}}
