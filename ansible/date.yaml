@@ -1,0 +1,13 @@
+---
+- hosts: servers
+ 
+  tasks:
+          - name: Get date for testing purpose
+            command: /bin/date
+            changed_when: False
+            register: date
+ 
+          - name: print date output to screen for each server in hosts 
+            debug: var={{ item }}
+            with_items:
+                    - date.stdout
