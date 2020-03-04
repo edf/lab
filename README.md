@@ -55,4 +55,4 @@ runWithAllParametersAndWrongAnsibleVersion.sh
 
 
 ## shared directory
-a directory is shared with the VMs and host at /vagrant
+a directory is shared with the current directory on the host and the VMs at /vagrant
