@@ -56,3 +56,8 @@ runWithAllParametersAndWrongAnsibleVersion.sh
 
 ## shared directory
 a directory is shared with the current directory on the host and the VMs at /vagrant
+
+## using multple distro playbook in lab/ansible
+```
+ansible-playbook -i inventory/hosts --limit servers main.yaml -k
+```
