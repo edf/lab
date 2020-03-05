@@ -5,12 +5,29 @@
     - name: update apt cache
       apt:
         update_cache: yes    
+      when: ansible_os_family == 'Debian'
     - name: Upgrade all packages to the latest version
       apt:
         name: "*"
-        state: latest    
+        state: latest
+      when: ansible_os_family == 'Debian'
     - name: install packages on localhost to allow use of SSH passwords
       apt: 
         name: sshpass
         state: latest
+      when: ansible_os_family == 'Debian'
+    - name: update all yum packages 
+      yum:
+        name: '*'
+        state: latest
+      when: ansible_os_family == 'RedHat'  
+    ## apt approach for keeping time
+    - name: Ensure NTP is running on apt based distros.
+      service: name=ntp state=started enabled=yes
+      when: ansible_os_family == 'Debian'
+    ## yum approach for keeping time
+    - name: Ensure time sync app is running on yum based distros.
+      service: name=chronyd state=started enabled=yes
+      when: ansible_os_family == 'RedHat'
+
       
