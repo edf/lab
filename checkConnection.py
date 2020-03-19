@@ -41,7 +41,9 @@ if my_parameters.connection_type in ['client']:
     s = socket.socket()
     client = (my_parameters.server, my_parameters.port)
     s.connect(client)
-    print(s.recv(1024))
+    s.sendall(b'ping')
+    data = s.recv(1024)
+    print('Received: ', repr(data))
     s.close()
 elif my_parameters.connection_type in ['server']:
     #print("PID of this script is: " + str(os.getpid()))
@@ -55,9 +57,12 @@ elif my_parameters.connection_type in ['server']:
     print(my_parameters.server + " listening")
     while True:
         connection, address = s.accept()
-        print("connection from " + address)
-        message = "connected with " + my_parameters.server + " on port " + my_parameters.port
-        connection.sendall(message)
+        print("connection from " + str(address))
+        #TODO send custom message
+        #message = "connected with " + my_parameters.server + " on port " + my_parameters.port
+        #connection.sendall(message)
+        data = connection.recv(1024)
+        connection.send(data)
         connection.close()
 else:
     print("error: " + my_parameters.connection_type + " message should have been prevented by choice in argparse")
